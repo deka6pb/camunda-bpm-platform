@@ -31,6 +31,8 @@ import org.camunda.bpm.engine.exception.NotFoundException;
 import org.camunda.bpm.engine.exception.NullValueException;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.impl.ActivityStatisticsQueryImpl;
+import org.camunda.bpm.engine.impl.ProcessEngineLogger;
+import org.camunda.bpm.engine.impl.externaltask.ExternalTaskLogger;
 import org.camunda.bpm.engine.impl.form.validator.FormFieldValidationException;
 import org.camunda.bpm.engine.impl.util.IoUtil;
 import org.camunda.bpm.engine.management.ActivityStatistics;
@@ -83,6 +85,8 @@ public class ProcessDefinitionResourceImpl implements ProcessDefinitionResource 
   protected String rootResourcePath;
   protected ObjectMapper objectMapper;
 
+  private final static ExternalTaskLogger LOG = ProcessEngineLogger.EXTERNAL_TASK_LOGGER;
+
   public ProcessDefinitionResourceImpl(ProcessEngine engine, String processDefinitionId, String rootResourcePath, ObjectMapper objectMapper) {
     this.engine = engine;
     this.processDefinitionId = processDefinitionId;
@@ -120,6 +124,8 @@ public class ProcessDefinitionResourceImpl implements ProcessDefinitionResource 
 
   @Override
   public ProcessInstanceDto startProcessInstance(UriInfo context, StartProcessInstanceDto parameters) {
+    LOG.customLog("Starting process instance '{}' '{}'", context, parameters);
+
     ProcessInstanceWithVariables instance = null;
     try {
       instance = startProcessInstanceAtActivities(parameters);

@@ -19,6 +19,8 @@ package org.camunda.bpm.engine.impl.cmd;
 import java.util.Date;
 import java.util.concurrent.Callable;
 
+import org.camunda.bpm.engine.impl.ProcessEngineLogger;
+import org.camunda.bpm.engine.impl.externaltask.ExternalTaskLogger;
 import org.camunda.bpm.engine.impl.history.HistoryLevel;
 import org.camunda.bpm.engine.impl.history.event.HistoryEvent;
 import org.camunda.bpm.engine.impl.history.event.HistoryEventProcessor;
@@ -37,6 +39,8 @@ import org.camunda.bpm.engine.impl.persistence.entity.TimerEntity;
 public abstract class AbstractSetStateCmd implements Command<Void> {
 
   protected static final String SUSPENSION_STATE_PROPERTY = "suspensionState";
+
+  private final static ExternalTaskLogger LOG = ProcessEngineLogger.EXTERNAL_TASK_LOGGER;
 
   protected boolean includeSubResources;
   protected boolean isLogUserOperationDisabled;
@@ -58,6 +62,7 @@ public abstract class AbstractSetStateCmd implements Command<Void> {
       if (isIncludeSubResources()) {
         final AbstractSetStateCmd cmd = getNextCommand();
         if (cmd != null) {
+          LOG.customLog("Next command is {}", cmd.toString());
           cmd.disableLogUserOperation();
           // avoids unnecessary authorization checks
           // pre-requirement: the necessary authorization check

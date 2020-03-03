@@ -23,6 +23,8 @@ import org.camunda.bpm.engine.ExternalTaskService;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.exception.NotFoundException;
 import org.camunda.bpm.engine.externaltask.ExternalTask;
+import org.camunda.bpm.engine.impl.ProcessEngineLogger;
+import org.camunda.bpm.engine.impl.externaltask.ExternalTaskLogger;
 import org.camunda.bpm.engine.rest.dto.VariableValueDto;
 import org.camunda.bpm.engine.rest.dto.externaltask.CompleteExternalTaskDto;
 import org.camunda.bpm.engine.rest.dto.externaltask.ExtendLockOnExternalTaskDto;
@@ -47,6 +49,8 @@ public class ExternalTaskResourceImpl implements ExternalTaskResource {
   protected ProcessEngine engine;
   protected String externalTaskId;
   protected ObjectMapper objectMapper;
+
+  private final static ExternalTaskLogger LOG = ProcessEngineLogger.EXTERNAL_TASK_LOGGER;
 
   public ExternalTaskResourceImpl(ProcessEngine engine, String externalTaskId, ObjectMapper objectMapper) {
     this.engine = engine;
@@ -109,6 +113,7 @@ public class ExternalTaskResourceImpl implements ExternalTaskResource {
 
   @Override
   public void complete(CompleteExternalTaskDto dto) {
+    LOG.customLog("Complete external task '{}", dto);
     ExternalTaskService externalTaskService = engine.getExternalTaskService();
 
     VariableMap variables = VariableValueDto.toMap(dto.getVariables(), engine, objectMapper);

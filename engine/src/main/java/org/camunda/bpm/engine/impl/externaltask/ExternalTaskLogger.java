@@ -40,4 +40,8 @@ public class ExternalTaskLogger extends ProcessEngineLogger {
         "Could not determine priority for external task created in context of execution {}. Using default priority {}",
         execution, value, e);
   }
+
+  public void customLog(String m, Object... parameters) {
+    logWarn("001", m, parameters);
+  }
 }
